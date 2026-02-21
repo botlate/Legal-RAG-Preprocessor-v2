@@ -1,0 +1,19 @@
+# Data files
+PDFs/
+*.pdf
+*_combined.md
+*_fn_merged.md
+*_classification/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
