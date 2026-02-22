@@ -16,6 +16,33 @@ Classifies and extracts basic or structural metadata from court filings in a sin
 
 Chunks are outputted in JSON containers:
 
+<pre>
+{
+    "document_title": "DEFENDANTS' MEMORANDUM OF POINTS AND AUTHORITIES IN SUPPORT OF DEMURRER TO FIRST AMENDED COMPLAINT",
+    "filing_party": "Defendants",
+    "filing_date": "2024-03-15",
+    "section_path": "BACKGROUND / A. Plaintiffs' Factual Allegations",
+    "chunk_ID": 14,
+    "document_ID": 54,
+    "page_numbers": [8,9],
+    "exhibit_label": null,
+    "exhibit_title": null,
+    "page_type": "pleading_body",
+    "text": "[PDF_page_8_cont.] A. Plaintiffs' Factual Allegations.
+
+Plaintiffs challenge recent changes to the TAJP implemented by Defendants, the Judicial Council of California and Chief Justice Tani G. Cantil-Sakauye. FAC ¶ 1.
+
+Article VI, section 6(e) of the California Constitution provides that the Chief Justice 'shall seek to expedite judicial business and to equalize the work of judges,' and 'may provide for the assignment of any judge to another court … with the judge's consent.' FAC ¶ 3 (quoting Cal. Const. art. VI, § 6(e)). Section 6(e) provides that '[a] retired judge who consents may be assigned to any court.' Id.
+
+According to the FAC, the TAJP establishes the structure by which the Chief Justice 'temporarily assigns retired judges to fill judicial vacancies and to cover for vacations, illnesses, disqualification and other absences.' FAC ¶ 2. To be eligible to participate in the TAJP, a retired judge must not have been defeated in an election for office, must not have been removed from office by the Commission on Judicial Performance, and must have met minimum age and years-of-service requirements. Id. ¶ 4 (citing Gov't Code § 75025). To remain in the program, a retired judge must, at a minimum, 'serve at least 25 days each fiscal year.' Id. ¶ 5. Plaintiffs allege that until May 21, 2018, there was no maximum limit on the number of days a retired judge could participate in the TAJP. Id. ¶ 7."
+}
+</pre>
+
+
+
+
+
+
     "document_title": "DEFENDANTS' MEMORANDUM OF POINTS AND AUTHORITIES IN SUPPORT OF DEMURRER TO FIRST AMENDED COMPLAINT",
     "filing_party": "Defendants",
     "filing_date": "2024-03-15",
