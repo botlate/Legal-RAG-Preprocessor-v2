@@ -12,7 +12,7 @@ Classifies and extracts basic or structural metadata from court filings in a sin
 
 **Final Output:** Text of filing, in chunks, each chunk with rich metadata.
 
-<img src=".chunking.png" width="600" alt="Pages chunked">
+<img src="./chunking.png" width="600" alt="Pages chunked">
 
 Chunks are outputted in JSON containers:
 ```json
