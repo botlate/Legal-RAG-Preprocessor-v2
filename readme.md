@@ -1,49 +1,21 @@
 # Legal Document RAG Preprocessor v2
 
-## What This Does
-Classifies and extracts metadata from court filings in a single API call, replacing the multi-step image-based pipeline in [v1](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG).
+## Objective
+Pre-processes litigation filings into contextually tagged chunks for use in a RAG repository by attorneys drafting briefs.
 
-**Input:** A PDF court filing + its OCR Markdown (from PaddleOCR-VL)
+## What This Does
+Classifies and extracts basic or structural metadata from court filings in a single API call. This replaces an early one-image per page process with the same objective: [v1](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG).
+
+**Input:** A PDF court filing + its OCR in Markdown (from PaddleOCR-VL)
 **Output:** Page classifications, caption metadata, footnote index, and a merged document with footnotes inlined
 
----
 
-## What Changed from v1
+# Purpose
+Standard RAG systems don't work well for legal documents because they ignore context. The same text means different things depending on whether it's in a complaint vs. a motion, the main argument vs. an exhibit, or plaintiff's allegation vs. defendant's characterization. When it was filed and by whom matters.
 
-The [original pipeline](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG) was built when LLM context windows were ~50K tokens and hallucination rates were higher. It processed one page image at a time across 10+ scripts, stitching results together afterward. That worked but was slow, fragile, and couldn't see full document context when classifying individual pages.
+This system extracts and embeds in each chunk the minimum background knowledge a litigator would need to make sense of that chunk independently: what document it's from, which part, who filed it and when, and what argument section it belongs to. Each chunk becomes a self-contained unit with enough context for useful legal retrieval.
 
-Two things changed that made the old approach unnecessary:
-
-1. **PaddleOCR-VL** now produces clean, structured Markdown from PDFs with minimal to no cleanup needed. This eliminates the need to send page images for text extraction — the OCR output is reliable enough to serve as the primary input.
-2. **Larger context windows** (1M+ tokens on current models) mean an entire filing's text fits in a single API call.
-
-Together, these let the full OCR text of a filing (often 50-100+ pages) go to the LLM at once. The LLM classifies every page, extracts the caption, identifies exhibits, tracks footnotes, and maps section headings — all with the full document in view.
-
-For very large filings that exceed the context window, later versions will split across multiple API calls, targeting a maximum of 80% of the model's token limit per call.
-
-### Image Usage
-
-Page images are still used, but selectively:
-
-- **Page 1 (always):** The caption page image is sent alongside the text in Pass 1 for cross-checking filing dates, court stamps, and other visual elements that OCR may miss.
-- **Other pages (at AI's discretion):** If Pass 1 flags specific pages as needing visual review — garbled OCR, handwritten content, stamped dates, visual elements — those page images are extracted from the source PDF and sent in a targeted Pass 2. Results are merged back, preferring the image for visual elements and the text for typed content.
-
-Most documents need only Pass 1. The test filing in this repo (a 22-page opposition brief) completed in 30 seconds with no Pass 2 needed.
-
----
-
-## Anti-Hallucination Architecture
-
-The LLM classifies and locates information but never provides final text for high-precision fields. Instead:
-
-- The **LLM** is authoritative for **location and classification** — which footnotes exist, what pages they're on, document structure, page categories
-- The **OCR source Markdown** is authoritative for **text content** — footnote text, document titles, exhibit labels
-
-For search-constrained fields, the LLM returns `{search_text, page}` as search parameters. A Python function finds the exact match in the source Markdown (after whitespace normalization) and copies the verbatim text. If the search fails, the field is flagged — not populated with the LLM's version.
-
-The search function's source code is embedded in the prompt so the LLM can see exactly what its output will be tested against.
-
----
+For the philosophy behind this, see [the v1 readme.](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG#why-standard-rag-fails-for-legal-work)
 
 ## Pipeline Scripts
 
@@ -53,8 +25,6 @@ The search function's source code is embedded in the prompt so the LLM can see e
 | `merge_footnotes.py` | Merges footnotes inline using the authority split. LLM identifies footnote locations; text is pulled verbatim from OCR source. |
 | `review_footnotes.py` | Standalone CLI tool for validating footnote detection. |
 | `text_classifier_gui.py` | Tkinter GUI. Scans a folder for `*_combined.md` files, provides buttons for classification and footnote merging. |
-
----
 
 ## Usage
 
@@ -71,7 +41,6 @@ The pipeline expects PaddleOCR-style Markdown with page delimiters:
 (page content)
 ---[End PDF page 1]---
 ```
-
 Place the `.md` file in the same folder as the source PDF:
 ```
 PDFs/
@@ -107,7 +76,45 @@ PDFs/
   SomeDocument_combined_fn_merged.md                 # Document with footnotes inlined
 ```
 
+
+### Selective Image Usage
+
+Page images are still used, but selectively:
+
+- **Page 1 (always):** The caption page image is sent alongside the text in Pass 1 for cross-checking filing dates, court stamps, and other visual elements that OCR may miss.
+- **Other pages (at AI's discretion):** If Pass 1 flags specific pages as needing visual review — garbled OCR, handwritten content, stamped dates, visual elements — those page images are extracted from the source PDF and sent in a targeted Pass 2. Results are merged back, preferring the image for visual elements and the text for typed content.
+
+Most documents need only Pass 1. The test filing in this repo (a 22-page opposition brief) completed in 30 seconds with no Pass 2 needed.
+
 ---
+
+## Anti-Hallucination Architecture
+
+The LLM classifies and locates information but never provides final text for high-precision fields. Instead:
+
+- The **LLM** is authoritative for **location and classification** — which footnotes exist, what pages they're on, document structure, page categories
+- The **OCR source Markdown** is authoritative for **text content** — footnote text, document titles, exhibit labels
+
+For search-constrained fields, the LLM returns `{search_text, page}` as search parameters. A Python function finds the exact match in the source Markdown (after whitespace normalization) and copies the verbatim text. If the search fails, the field is flagged — not populated with the LLM's version.
+
+The search function's source code is embedded in the prompt so the LLM can see exactly what its output will be tested against.
+
+---
+
+
+## What Changed from v1
+
+The [original pipeline](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG) was built when LLM context windows were ~50K tokens and hallucination rates were higher. It processed one page image at a time across 10+ scripts, stitching results together afterward. That worked but was slow, fragile, and couldn't see full document context when classifying individual pages.
+
+Two things changed that made the old approach unnecessary:
+
+1. **PaddleOCR-VL** now produces clean, structured Markdown from PDFs with minimal to no cleanup needed. This eliminates the need to send page images for text extraction — the OCR output is reliable enough to serve as the primary input.
+2. **Larger context windows** (1M+ tokens on current models) mean an entire filing's text fits in a single API call.
+
+Together, these let the full OCR text of a filing (often 50-100+ pages) go to the LLM at once. The LLM classifies every page, extracts the caption, identifies exhibits, tracks footnotes, and maps section headings — all with the full document in view.
+
+For very large filings that exceed the context window, later versions will split across multiple API calls, targeting a maximum of 80% of the model's token limit per call.
+
 
 ## Coming Soon
 
