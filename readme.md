@@ -7,10 +7,12 @@ Pre-processes litigation filings into contextually tagged chunks for use in a RA
 Classifies and extracts basic or structural metadata from court filings in a single API call. V2 replaces an early one-image per page process: [v1](https://github.com/botlate/Court-Filings-Preprocessing-for-RAG).
 
 **Input:** A PDF court filing + its OCR in Markdown (from PaddleOCR-VL)
+
 **Mid-Output:** Page classifications, caption metadata, footnote index, and a merged document with footnotes inlined
+
 **Final Output:** Text of filing, in chunks, each chunk with rich metadata.
 
-<img src="./images/chunking.png" width="600" alt="Pages chunked">
+<img src=".chunking.png" width="600" alt="Pages chunked">
 
 Chunks are outputted in JSON containers:
 ```json
