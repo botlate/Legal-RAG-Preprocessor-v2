@@ -30,7 +30,7 @@ Chunks are outputted in JSON containers:
     "exhibit_label": null,
     "exhibit_title": null,
     "page_type": "pleading_body",
-    "text": "[PDF_page_8_cont.] A. Plaintiffs' Factual Allegations. Plaintiffs challenge recent changes to the TAJP ... could participate in the TAJP. Id. ¶ 7."
+    "text": "[PDF_page_8_cont.] A. Plaintiffs' Factual Allegations. Plaintiffs challenge recent changes to the TAJP ... \n ... could participate in the TAJP. Id. ¶ 7."
 }
 ```
 
@@ -46,7 +46,7 @@ Chunks are outputted in JSON containers:
     "exhibit_label": null,
     "exhibit_title": null,
     "page_type": "pleading_body",
-    "text": "[PDF_page_9_cont] On May 21, 2018, Defendants limited the number of days a retired judge can participate in the TAJP ... as well as declaratory and injunctive relief. See FAC at Prayer for Relief."
+    "text": "[PDF_page_9_cont] On May 21, 2018, Defendants limited the number of days a retired judge can participate in the TAJP ... \n ... as well as declaratory and injunctive relief. See FAC at Prayer for Relief."
 }
 ```
 
