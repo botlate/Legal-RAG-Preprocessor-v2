@@ -1,5 +1,7 @@
 # Legal Document RAG Preprocessor v2
 
+[WORK IN PROGRESS - partial pipeline only]
+
 ## Basic Idea
 Pre-processes litigation filings into contextually tagged chunks for use in a RAG repository by attorneys drafting briefs. AI takes OCR and selected pages images to build metadata-rich chunks of entire document. Each chunk has enough labels to be self-standing in order to minimize AI confusion when using one among a thousand+ blocks of text.
 
